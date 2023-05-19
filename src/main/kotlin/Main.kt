@@ -14,7 +14,9 @@ suspend fun main() {
     println(playerQueries.selectAll().executeSuspendingAsList())
     // Prints [HockeyPlayer(15, "Ryan Getzlaf")]
 
-    playerQueries.insert(player_number = 10, full_name = "Corey Perry")
+    database.transaction {
+        playerQueries.insert(player_number = 10, full_name = "Corey Perry")
+    }
     println(playerQueries.selectAll().executeSuspendingAsList())
     // Prints [HockeyPlayer(15, "Ryan Getzlaf"), HockeyPlayer(10, "Corey Perry")]
 

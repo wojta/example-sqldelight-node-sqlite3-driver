@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.targets.js.yarn.yarn
 import java.util.*
 
 plugins {
-    kotlin("js") version "1.8.0"
+    kotlin("js") version "1.8.10"
     id("app.cash.sqldelight") version "2.0.0-alpha05"
 }
 
@@ -30,7 +30,7 @@ kotlin {
         binaries.executable()
         nodejs {
             dependencies {
-                implementation("cz.sazel.sqldelight:node-sqlite3-driver-js:0.1.3")
+                implementation("cz.sazel.sqldelight:node-sqlite3-driver-js:0.1.5")
             }
         }
     }
