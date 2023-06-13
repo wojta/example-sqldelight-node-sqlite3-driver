@@ -3,7 +3,7 @@ import java.util.*
 
 plugins {
     kotlin("js") version "1.8.10"
-    id("app.cash.sqldelight") version "2.0.0-alpha05"
+    id("app.cash.sqldelight") version "2.0.0-rc01"
 }
 
 group = "cz.sazel.sqldelight.node.sqlite3"
@@ -30,7 +30,7 @@ kotlin {
         binaries.executable()
         nodejs {
             dependencies {
-                implementation("cz.sazel.sqldelight:node-sqlite3-driver-js:0.1.5")
+                implementation("cz.sazel.sqldelight:node-sqlite3-driver-js:0.2.0")
             }
         }
     }
