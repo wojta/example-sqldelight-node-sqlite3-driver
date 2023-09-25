@@ -22,4 +22,5 @@ suspend fun main() {
 
     val player = HockeyPlayer(20, "Ronald McDonald")
     playerQueries.insertFullPlayerObject(player)
+    driver.close()
 }

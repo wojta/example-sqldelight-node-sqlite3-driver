@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.targets.js.yarn.yarn
 import java.util.*
 
 plugins {
-    kotlin("js") version "1.9.20-Beta"
+    kotlin("multiplatform") version "1.9.10"
     id("app.cash.sqldelight") version "2.0.0"
 }
 
@@ -21,16 +21,18 @@ repositories {
     mavenCentral()
 }
 
-dependencies {
-    testImplementation(kotlin("test"))
-}
-
 kotlin {
-    js {
+    js(IR) {
+        useCommonJs()
         binaries.executable()
-        nodejs {
+        nodejs()
+    }
+
+    sourceSets {
+        val commonMain by getting {}
+        val jsMain by getting {
             dependencies {
-                implementation("cz.sazel.sqldelight:node-sqlite3-driver-js:0.3.0")
+                implementation("cz.sazel.sqldelight:node-sqlite3-driver-js:0.3.1")
             }
         }
     }
@@ -59,4 +61,8 @@ val bindingsInstall = tasks.register("sqlite3BindingsInstall") {
 }.get()
 tasks["kotlinNpmInstall"].finalizedBy(bindingsInstall)
 
-
+tasks.register("cleanDb") {
+    doLast {
+        file("build/js/packages/example-sqldelight-node-sqlite3-driver/test.db").delete()
+    }
+}
