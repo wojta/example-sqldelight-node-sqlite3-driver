@@ -1,9 +1,10 @@
+import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootPlugin.Companion.kotlinNodeJsExtension
 import org.jetbrains.kotlin.gradle.targets.js.yarn.yarn
 import java.util.*
 
 plugins {
-    kotlin("multiplatform") version "1.9.10"
-    id("app.cash.sqldelight") version "2.0.0"
+    kotlin("multiplatform") version "2.0.20-Beta1"
+    id("app.cash.sqldelight") version "2.0.2"
 }
 
 group = "cz.sazel.sqldelight.node.sqlite3"
@@ -32,7 +33,7 @@ kotlin {
         val commonMain by getting {}
         val jsMain by getting {
             dependencies {
-                implementation("cz.sazel.sqldelight:node-sqlite3-driver-js:0.3.1")
+                implementation("cz.sazel.sqldelight:node-sqlite3-driver-js:0.3.2")
             }
         }
     }
@@ -53,7 +54,13 @@ val bindingsInstall = tasks.register("sqlite3BindingsInstall") {
         if (!sqlite3moduleDir.resolve("lib/binding").exists()) {
             exec {
                 workingDir = sqlite3moduleDir
-                val commandLine = "${yarn.yarnSetupTaskProvider.get().destination.absolutePath}/bin/yarn"
+                val yarnPath="${yarn.yarnSetupTaskProvider.get().destination.absolutePath}/bin"
+                val nodePath="${kotlinNodeJsExtension.nodeJsSetupTaskProvider.get().destination.absolutePath}/bin"
+                environment(
+                    "PATH",
+                    System.getenv("PATH") + ":$yarnPath:$nodePath"
+                )
+                var commandLine = "$yarnPath/yarn"
                 commandLine(commandLine)
             }
         }
