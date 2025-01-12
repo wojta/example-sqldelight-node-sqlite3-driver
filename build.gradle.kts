@@ -1,9 +1,9 @@
-import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootPlugin.Companion.kotlinNodeJsExtension
+import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsPlugin.Companion.kotlinNodeJsEnvSpec
 import org.jetbrains.kotlin.gradle.targets.js.yarn.yarn
 import java.util.*
 
 plugins {
-    kotlin("multiplatform") version "2.0.20-Beta1"
+    kotlin("multiplatform") version "2.1.20-Beta1"
     id("app.cash.sqldelight") version "2.0.2"
 }
 
@@ -33,7 +33,7 @@ kotlin {
         val commonMain by getting {}
         val jsMain by getting {
             dependencies {
-                implementation("cz.sazel.sqldelight:node-sqlite3-driver-js:0.3.2")
+                implementation("cz.sazel.sqldelight:node-sqlite3-driver-js:0.4.0")
             }
         }
     }
@@ -50,18 +50,17 @@ sqldelight {
 
 val bindingsInstall = tasks.register("sqlite3BindingsInstall") {
     doLast {
-        val sqlite3moduleDir = buildDir.resolve("js/node_modules/sqlite3")
-        if (!sqlite3moduleDir.resolve("lib/binding").exists()) {
+        val sqlite3moduleDir = layout.buildDirectory.get().dir("js/node_modules/sqlite3").asFile
+        if (!sqlite3moduleDir.resolve("build").exists()) {
             exec {
                 workingDir = sqlite3moduleDir
-                val yarnPath="${yarn.yarnSetupTaskProvider.get().destination.absolutePath}/bin"
-                val nodePath="${kotlinNodeJsExtension.nodeJsSetupTaskProvider.get().destination.absolutePath}/bin"
+                val yarnExecutable = yarn.environment.executable
+                val yarnPath = file(yarnExecutable).parent
+                val nodePath = file(kotlinNodeJsEnvSpec.executable).parent
                 environment(
-                    "PATH",
-                    System.getenv("PATH") + ":$yarnPath:$nodePath"
+                    "PATH", System.getenv("PATH") + ":$yarnPath:$nodePath"
                 )
-                var commandLine = "$yarnPath/yarn"
-                commandLine(commandLine)
+                commandLine(yarnExecutable)
             }
         }
     }
