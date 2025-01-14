@@ -19,11 +19,12 @@ val localProperties = Properties().apply {
 }
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
 kotlin {
-    js(IR) {
+    js {
         useCommonJs()
         binaries.executable()
         nodejs()
@@ -33,7 +34,7 @@ kotlin {
         val commonMain by getting {}
         val jsMain by getting {
             dependencies {
-                implementation("cz.sazel.sqldelight:node-sqlite3-driver-js:0.4.0")
+                implementation("cz.sazel.sqldelight:node-sqlite3-driver-js:0.4.1")
             }
         }
     }
@@ -66,6 +67,11 @@ val bindingsInstall = tasks.register("sqlite3BindingsInstall") {
     }
 }.get()
 tasks["kotlinNpmInstall"].finalizedBy(bindingsInstall)
+
+tasks.register("run") {
+    dependsOn("cleanDb")
+    dependsOn("jsNodeDevelopmentRun")
+}
 
 tasks.register("cleanDb") {
     doLast {
